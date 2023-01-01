@@ -245,61 +245,9 @@ static int process_op(
   return -1;
 }
 
-static struct _const_operand
-{
-  char* ident;
-  int type;
-} _const_operands [] = {
-  { "al0", OP_AL0 },
-  { "al1", OP_AL1 },
-  { "baud", OP_BAUD },
-  { "begd", OP_BEGD },
-  { "bus", OP_BUS },
-  { "clk", OP_CLK },
-  { "cnt", OP_CNT },
-  { "curs", OP_CURS },
-  { "dbb", OP_DBB },
-  { "dma", OP_DMA },
-  { "endd", OP_ENDD },
-  { "f0", OP_F0 },
-  { "f1", OP_F1 },
-  { "flags", OP_FLAGS },
-  { "hacc", OP_HACC },
-  { "home", OP_HOME },
-  { "hpen", OP_HPEN },
-  { "ii", OP_II },
-  { "intr", OP_INTR },
-  { "mask", OP_MASK },
-  { "mb0", OP_MB0 },
-  { "mb1", OP_MB1 },
-  { "mb2", OP_MB2 },
-  { "mb3", OP_MB3 },
-  { "port", OP_PORT },
-  { "psr", OP_PSR },
-  { "psw", OP_PSW },
-  { "rcvr", OP_RCVR },
-  { "rb0", OP_RB0 },
-  { "rb1", OP_RB1 },
-  { "scr", OP_SCR },
-  { "srow", OP_SROW },
-  { "stat", OP_STAT },
-  { "sts", OP_STS },
-  { "tcnt", OP_TCNT },
-  { "tcnti", OP_TCNTI },
-  { "tcp", OP_TCP },
-  { "ucr", OP_UCR },
-  { "umx", OP_UMX },
-  { "vcr", OP_VCR },
-  { "vint", OP_VINT },
-  { "vpen", OP_VPEN },
-  { "xi", OP_XI },
-  { "xmtr", OP_XMTR },
-  { "", OP_NONE },
-};
-
 static int match_const_operand(struct _operand *operand, char* token)
 {
-  for (struct _const_operand* op = _const_operands; op->type != OP_NONE; op++) {
+  for (struct _const_operand_8048* op = const_operands_8048; op->type != OP_NONE; op++) {
     if (strcasecmp(op->ident, token) == 0)
     {
       operand->operand = OPERAND_CONST;

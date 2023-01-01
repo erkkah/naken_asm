@@ -23,6 +23,18 @@ int get_cycle_count_8048(unsigned short int opcode)
   return -1;
 }
 
+static int match_const_operand(char* instruction, int type)
+{
+  for (struct _const_operand_8048* op = const_operands_8048; op->type != OP_NONE; op++) {
+    if (op->type == type)
+    {
+      strcat(instruction, op->ident);
+      return 1;
+    }
+  }
+  return 0;
+}
+
 int disasm_8048(
   struct _memory *memory,
   uint32_t flags,
@@ -42,14 +54,9 @@ int disasm_8048(
 
   for (n = 0; table_8048[n].name != NULL; n++)
   {
-    if (table_8048[n].flags == FLAG_8048)
+    if (table_8048[n].flags != 0 && (table_8048[n].flags & flags) == 0)
     {
-      if (flags != 0) { continue; }
-    }
-
-    if (table_8048[n].flags == FLAG_8041)
-    {
-      if (flags != 1) { continue; }
+      continue;
     }
 
     if (table_8048[n].opcode == (opcode & table_8048[n].mask))
@@ -75,58 +82,21 @@ int disasm_8048(
         int type = (r == 0) ? table_8048[n].operand_1 :
                               table_8048[n].operand_2;
 
+        if (match_const_operand(instruction, type))
+        {
+          continue;
+        }
+
         switch (type)
         {
-          case OP_A:
-            strcat(instruction, "A");
-            break;
-          case OP_C:
-            strcat(instruction, "C");
-            break;
-          case OP_I:
-            strcat(instruction, "I");
-            break;
-          case OP_T:
-            strcat(instruction, "T");
-            break;
-          case OP_F0:
-            strcat(instruction, "F0");
-            break;
-          case OP_F1:
-            strcat(instruction, "F1");
-            break;
-          case OP_BUS:
-            strcat(instruction, "BUS");
-            break;
-          case OP_CLK:
-            strcat(instruction, "CLK");
-            break;
-          case OP_CNT:
-            strcat(instruction, "CNT");
-            break;
-          case OP_MB0:
-            strcat(instruction, "MB0");
-            break;
-          case OP_MB1:
-            strcat(instruction, "MB1");
-            break;
-          case OP_RB0:
-            strcat(instruction, "RB0");
-            break;
-          case OP_RB1:
-            strcat(instruction, "RB1");
-            break;
-          case OP_PSW:
-            strcat(instruction, "PSW");
-            break;
-          case OP_TCNT:
-            strcat(instruction, "TCNT");
-            break;
-          case OP_TCNTI:
-            strcat(instruction, "TCNTI");
-            break;
           case OP_AT_A:
             strcat(instruction, "@A");
+            break;
+          case OP_AT_CURS:
+            strcat(instruction, "@CURS");
+            break;
+          case OP_AT_TCP:
+            strcat(instruction, "@TCP");
             break;
           case OP_PP:
           case OP_P03:
@@ -162,18 +132,6 @@ int disasm_8048(
             sprintf(temp, "#0x%02x", (address & 0xff00) | value);
             strcat(instruction, temp);
             length = 2;
-            break;
-          case OP_DMA:
-            strcat(instruction, "DMA");
-            break;
-          case OP_FLAGS:
-            strcat(instruction, "FLAGS");
-            break;
-          case OP_STS:
-            strcat(instruction, "STS");
-            break;
-          case OP_DBB:
-            strcat(instruction, "DBB");
             break;
         }
       }

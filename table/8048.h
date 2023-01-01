@@ -101,7 +101,14 @@ struct _table_8048
   uint8_t flags;
 };
 
+struct _const_operand_8048
+{
+  char* ident;
+  int type;
+};
+
 extern struct _table_8048 table_8048[];
+extern struct _const_operand_8048 const_operands_8048[];
 
 #endif
 
