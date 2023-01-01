@@ -61,6 +61,7 @@ static int check_match(int type, int operand, int table_type)
         case OP_P0:
         case OP_P03:
         case OP_P12:
+        case OP_PORT:
           return 0;
         default:
           return -1;
@@ -112,10 +113,42 @@ static int process_op(
       case OP_TCNT:
       case OP_TCNTI:
       case OP_AT_A:
+      // 8041
       case OP_DMA:
       case OP_FLAGS:
       case OP_STS:
       case OP_DBB:
+      // NS405
+      case OP_HACC:
+      case OP_INTR:
+      case OP_MASK:
+      case OP_II:
+      case OP_XI:
+      case OP_PORT:
+      case OP_MB2:
+      case OP_MB3:
+      case OP_SCR:
+      case OP_VCR:
+      case OP_HOME:
+      case OP_CURS:
+      case OP_AT_CURS:
+      case OP_BEGD:
+      case OP_ENDD:
+      case OP_SROW:
+      case OP_AL0:
+      case OP_AL1:
+      case OP_HPEN:
+      case OP_VPEN:
+      case OP_VINT:
+      case OP_PSR:
+      case OP_BAUD:
+      case OP_UCR:
+      case OP_UMX:
+      case OP_STAT:
+      case OP_RCVR:
+      case OP_XMTR:
+      case OP_TCP:
+      case OP_AT_TCP:
         return 1;
       default:
         return -1;
@@ -212,6 +245,71 @@ static int process_op(
   return -1;
 }
 
+static struct _const_operand
+{
+  char* ident;
+  int type;
+} _const_operands [] = {
+  { "al0", OP_AL0 },
+  { "al1", OP_AL1 },
+  { "baud", OP_BAUD },
+  { "begd", OP_BEGD },
+  { "bus", OP_BUS },
+  { "clk", OP_CLK },
+  { "cnt", OP_CNT },
+  { "curs", OP_CURS },
+  { "dbb", OP_DBB },
+  { "dma", OP_DMA },
+  { "endd", OP_ENDD },
+  { "f0", OP_F0 },
+  { "f1", OP_F1 },
+  { "flags", OP_FLAGS },
+  { "hacc", OP_HACC },
+  { "home", OP_HOME },
+  { "hpen", OP_HPEN },
+  { "ii", OP_II },
+  { "intr", OP_INTR },
+  { "mask", OP_MASK },
+  { "mb0", OP_MB0 },
+  { "mb1", OP_MB1 },
+  { "mb2", OP_MB2 },
+  { "mb3", OP_MB3 },
+  { "port", OP_PORT },
+  { "psr", OP_PSR },
+  { "psw", OP_PSW },
+  { "rcvr", OP_RCVR },
+  { "rb0", OP_RB0 },
+  { "rb1", OP_RB1 },
+  { "scr", OP_SCR },
+  { "srow", OP_SROW },
+  { "stat", OP_STAT },
+  { "sts", OP_STS },
+  { "tcnt", OP_TCNT },
+  { "tcnti", OP_TCNTI },
+  { "tcp", OP_TCP },
+  { "ucr", OP_UCR },
+  { "umx", OP_UMX },
+  { "vcr", OP_VCR },
+  { "vint", OP_VINT },
+  { "vpen", OP_VPEN },
+  { "xi", OP_XI },
+  { "xmtr", OP_XMTR },
+  { "", OP_NONE },
+};
+
+static int match_const_operand(struct _operand *operand, char* token)
+{
+  for (struct _const_operand* op = _const_operands; op->type != OP_NONE; op++) {
+    if (strcasecmp(op->ident, token) == 0)
+    {
+      operand->operand = OPERAND_CONST;
+      operand->type = op->type;
+      return 1;
+    }
+  }
+  return 0;
+}
+
 int parse_instruction_8048(struct _asm_context *asm_context, char *instr)
 {
   char instr_case[TOKENLEN];
@@ -301,6 +399,18 @@ int parse_instruction_8048(struct _asm_context *asm_context, char *instr)
         operands[operand_count].type = OP_AT_A;
       }
         else
+      if (strcasecmp("curs", token) == 0)
+      {
+        operands[operand_count].operand = OPERAND_CONST;
+        operands[operand_count].type = OP_AT_CURS;
+      }
+        else
+      if (strcasecmp("tcp", token) == 0)
+      {
+        operands[operand_count].operand = OPERAND_CONST;
+        operands[operand_count].type = OP_AT_TCP;
+      }
+        else
       {
         print_error_unexp(token, asm_context);
         return -1;
@@ -328,86 +438,7 @@ int parse_instruction_8048(struct _asm_context *asm_context, char *instr)
       operands[operand_count].value = num;
     }
       else
-    if (strcasecmp(token, "bus") == 0)
-    {
-      operands[operand_count].type = OP_BUS;
-    }
-      else
-    if (strcasecmp(token, "clk") == 0)
-    {
-      operands[operand_count].type = OP_CLK;
-    }
-      else
-    if (strcasecmp(token, "cnt") == 0)
-    {
-      operands[operand_count].type = OP_CNT;
-    }
-      else
-    if (strcasecmp(token, "tcnt") == 0)
-    {
-      operands[operand_count].type = OP_TCNT;
-    }
-      else
-    if (strcasecmp(token, "tcnti") == 0)
-    {
-      operands[operand_count].type = OP_TCNTI;
-    }
-      else
-    if (strcasecmp(token, "PSW") == 0)
-    {
-      operands[operand_count].type = OP_PSW;
-    }
-      else
-    if (strcasecmp(token, "f0") == 0)
-    {
-      operands[operand_count].type = OP_F0;
-    }
-      else
-    if (strcasecmp(token, "f1") == 0)
-    {
-      operands[operand_count].type = OP_F1;
-    }
-      else
-    if (strcasecmp(token, "mb0") == 0)
-    {
-      operands[operand_count].type = OP_MB0;
-    }
-      else
-    if (strcasecmp(token, "mb1") == 0)
-    {
-      operands[operand_count].type = OP_MB1;
-    }
-      else
-    if (strcasecmp(token, "rb0") == 0)
-    {
-      operands[operand_count].type = OP_RB0;
-    }
-      else
-    if (strcasecmp(token, "rb1") == 0)
-    {
-      operands[operand_count].type = OP_RB1;
-    }
-      else
-    if (strcasecmp(token, "dma") == 0)
-    {
-      operands[operand_count].type = OP_DMA;
-    }
-      else
-    if (strcasecmp(token, "flags") == 0)
-    {
-      operands[operand_count].type = OP_FLAGS;
-    }
-      else
-    if (strcasecmp(token, "sts") == 0)
-    {
-      operands[operand_count].type = OP_STS;
-    }
-      else
-    if (strcasecmp(token, "dbb") == 0)
-    {
-      operands[operand_count].type = OP_DBB;
-    }
-      else
+    if (!match_const_operand(&operands[operand_count], token))
     {
       operands[operand_count].type = OP_ADDR;
       operands[operand_count].operand = OPERAND_ADDRESS;
@@ -452,14 +483,23 @@ printf("\n");
 
   for (n = 0; table_8048[n].name != NULL; n++)
   {
-    if (table_8048[n].flags == FLAG_8048)
+    if (table_8048[n].flags != FLAG_NONE)
     {
-      if (asm_context->cpu_type != CPU_TYPE_8048) { continue; }
-    }
-
-    if (table_8048[n].flags == FLAG_8041)
-    {
-      if (asm_context->cpu_type != CPU_TYPE_8041) { continue; }
+      if (asm_context->cpu_type == CPU_TYPE_8048 &&
+          (table_8048[n].flags & FLAG_8048) == 0)
+      {
+        continue;
+      }
+      if (asm_context->cpu_type == CPU_TYPE_8041 &&
+          (table_8048[n].flags & FLAG_8041) == 0)
+      {
+        continue;
+      }
+      if (asm_context->cpu_type == CPU_TYPE_NS405 &&
+          (table_8048[n].flags & FLAG_NS405) == 0)
+      {
+        continue;
+      }
     }
 
     if (strcmp(table_8048[n].name, instr_case) == 0)

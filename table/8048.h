@@ -48,13 +48,45 @@ enum
   OP_FLAGS,
   OP_STS,
   OP_DBB,
+  // Extra for NS405.
+  OP_HACC,
+  OP_INTR,
+  OP_MASK,
+  OP_II,
+  OP_XI,
+  OP_PORT,
+  OP_MB2,
+  OP_MB3,
+  OP_SCR,
+  OP_VCR,
+  OP_HOME,
+  OP_CURS,
+  OP_AT_CURS,
+  OP_BEGD,
+  OP_ENDD,
+  OP_SROW,
+  OP_AL0,
+  OP_AL1,
+  OP_HPEN,
+  OP_VPEN,
+  OP_VINT,
+  OP_PSR,
+  OP_BAUD,
+  OP_UCR,
+  OP_UMX,
+  OP_STAT,
+  OP_RCVR,
+  OP_XMTR,
+  OP_TCP,
+  OP_AT_TCP,
 };
 
 enum
 {
   FLAG_NONE = 0,
-  FLAG_8041,
-  FLAG_8048,
+  FLAG_8041 = 1,
+  FLAG_8048 = 2,
+  FLAG_NS405 = 4,
 };
 
 struct _table_8048

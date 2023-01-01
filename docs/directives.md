@@ -40,6 +40,7 @@ CPU this source file should be assembled for.
 |.msp430          |MSP430
 |.mps430x         |MSP430X
 |.n64_rsp         |Nintendo 64 RSP
+|.ns405           |National Semiconductor NS405 (8048 - based)
 |.pdk13           |Padauk PDK13
 |.pdk14           |Padauk PDK14
 |.pdk15           |Padauk PDK15
