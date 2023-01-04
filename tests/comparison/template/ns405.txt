@@ -1,0 +1,121 @@
+add A, r1
+add A, #2
+add A, @r0
+addc A, r0
+addc A, #21
+addc A, @r1
+anl A, r0
+anl A, #11
+anl A, @r0
+anl PORT, #132
+call 1022
+clr A
+clr C
+clr f0
+clr f1
+cpl A
+cpl f0
+cpl f1
+da A
+dec A
+dec CURS
+dec r1
+dis ii
+dis xi
+djnz r2, 10
+en ii
+en xi
+inc A
+inc CURS
+inc r7
+inc @r1
+incl r1
+in PORT
+in RCVR
+jb5 76
+jc 77
+jf0 78
+jf1 79
+jmp 511
+jmpp @a
+jnc 99
+jnf0 100
+jnf0 101
+jntf 102
+jnxi 103
+jnz 104
+jtf 105
+jxi 106
+jz 107
+mov A, CURS
+mov A, HACC
+mov A, HOME
+mov A, HPEN
+mov A, INTR
+mov A, PSW
+mov A, r6
+mov A, STAT
+mov A, T
+mov A, VPEN
+mov A, @r0
+mov A, #99
+mov AL0, A
+mov AL1, A
+mov @TCP, A
+mov BAUD, A
+mov BEGD, A
+mov CURS, A
+mov ENDD, A
+mov HACC, A
+mov HOME, A
+mov MASK, A
+mov PSR, A
+mov PSW, A
+mov r2, A
+mov SCR, A
+mov SROW, A
+mov T, A
+mov TCP, A
+mov UCR, A
+mov UMX, A
+mov VCR, A
+mov VINT, A
+mov r3, #33
+mov @r1, A
+mov @r1, #11
+mov @TCP, A
+movl A, r0
+movl A, r1
+movl r0, A
+movl r1, A
+movp A, @A
+movp3 A, @A
+movx A, @CURS
+movx A, @r0
+movx A, @r1
+movx @CURS, A
+movx @r0, A
+movx @r1, A
+orl A, R4
+orl A, @r1
+orl A, #1
+orl PORT, #123
+out PORT
+out XMTR
+rl A
+rlc A
+rr A
+rrc A
+sel MB0
+sel MB1
+sel MB2
+sel MB3
+sel RB1
+stop T
+strt T
+swap A
+xch A, r1
+xch A, @r1
+xchd A, @r0
+xrl A, @r0
+xrl A, #0
